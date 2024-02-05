@@ -3,7 +3,13 @@ import { Link, Tabs } from "expo-router";
 import { Pressable } from "react-native";
 import { Text } from "tamagui";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-
+import {
+  Home,
+  KanbanSquare,
+  Users,
+  ClipboardList,
+  Menu,
+} from "@tamagui/lucide-icons";
 export default function TabLayout() {
   const [session, setSession] = useState<string | null>(null);
 
@@ -24,28 +30,78 @@ export default function TabLayout() {
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: "red",
+        tabBarActiveTintColor: "white",
       }}
     >
       <Tabs.Screen
         name="index"
         options={{
-          title: "Tab One",
-          tabBarIcon: ({ color }) => <Text>Hello!</Text>,
-          headerRight: () => (
-            <Link href="/modal" asChild>
-              <Pressable>
-                <Text className="px-4">Hello!</Text>
-              </Pressable>
-            </Link>
-          ),
+          title: "Home",
+          tabBarIcon: ({ color }) => <Home size={24} color={color} />,
+          // headerRight: () => (
+          //   <Link href="/modal" asChild>
+          //     <Pressable>
+          //       <Text className="px-4">Hello!</Text>
+          //     </Pressable>
+          //   </Link>
+          // ),
         }}
       />
       <Tabs.Screen
-        name="two"
+        name="sessions"
         options={{
-          title: "Tab Two",
-          tabBarIcon: ({ color }) => <Text>Hello!</Text>,
+          title: "Sessions",
+          tabBarIcon: ({ color }) => <ClipboardList size={24} color={color} />,
+          // headerRight: () => (
+          //   <Link href="/modal" asChild>
+          //     <Pressable>
+          //       <Text className="px-4">Hello!</Text>
+          //     </Pressable>
+          //   </Link>
+          // ),
+        }}
+      />
+      <Tabs.Screen
+        name="studio"
+        options={{
+          title: "Studio",
+          tabBarIcon: ({ color }) => <KanbanSquare size={24} color={color} />,
+          // headerRight: () => (
+          //   <Link href="/modal" asChild>
+          //     <Pressable>
+          //       <Text className="px-4">Hello!</Text>
+          //     </Pressable>
+          //   </Link>
+          // ),
+        }}
+      />
+      <Tabs.Screen
+        name="clients"
+        options={{
+          title: "Clients",
+          tabBarIcon: ({ color }) => <Users size={24} color={color} />,
+          // headerRight: () => (
+          //   <Link href="/modal" asChild>
+          //     <Pressable>
+          //       <Text className="px-4">Hello!</Text>
+          //     </Pressable>
+          //   </Link>
+          // ),
+        }}
+      />
+
+      <Tabs.Screen
+        name="settings"
+        options={{
+          title: "Settings",
+          tabBarIcon: ({ color }) => <Menu size={24} color={color} />,
+          headerRight: () => (
+            <Link href="/modal" asChild>
+              <Pressable>
+                <Text className="px-4">Log Out</Text>
+              </Pressable>
+            </Link>
+          ),
         }}
       />
     </Tabs>

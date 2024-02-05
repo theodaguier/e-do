@@ -30,3 +30,8 @@ export const auth = ({
       console.error("Error:", error);
     });
 };
+
+export const checkAuth = async () => {
+  const token = await AsyncStorage.getItem("userToken");
+  return !!token;
+};

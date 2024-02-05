@@ -1,13 +1,5 @@
 import { z } from "zod";
-import {
-  Text,
-  Input,
-  Button,
-  ListItem,
-  YStack,
-  H3,
-  fullscreenStyle,
-} from "tamagui";
+import { Text, Input, Button, ListItem, YStack, H3 } from "tamagui";
 import { useForm, Controller, SubmitHandler } from "react-hook-form";
 import { auth } from "../utils/auth.utils";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -17,7 +9,6 @@ import { LoginSchema } from "../utils/validations/auth.utils";
 import { Container } from "../components/layout/container";
 import Toast from "react-native-toast-message";
 import { router } from "expo-router";
-import { useEffect, useState } from "react";
 
 type LoginSchemaType = z.infer<typeof LoginSchema>;
 
@@ -48,26 +39,6 @@ const AuthScreen = () => {
     AsyncStorage.setItem("user", JSON.stringify(user));
     router.push("/(tabs)/");
   };
-
-  const [session, setSession] = useState<string | null>(null);
-
-  useEffect(() => {
-    // Utilisez une fonction asynchrone dans useEffect pour charger les données de manière asynchrone
-    const loadSession = async () => {
-      try {
-        const user = await AsyncStorage.getItem("userToken");
-        setSession(user);
-      } catch (error) {
-        console.error("Erreur lors du chargement de la session :", error);
-      }
-    };
-
-    loadSession();
-  }, []);
-
-  if (session) {
-    router.replace("/(tabs)/");
-  }
 
   return (
     <Container>
