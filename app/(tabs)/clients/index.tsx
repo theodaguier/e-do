@@ -1,9 +1,9 @@
 import { View, Text } from "tamagui";
 
-export const ClientsScreen = () => {
+export default function ClientsScreen() {
   return (
     <View>
       <Text>Sessions</Text>
     </View>
   );
-};
+}

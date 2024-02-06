@@ -1,13 +1,5 @@
 import { z } from "zod";
-import {
-  Text,
-  Input,
-  Button,
-  ListItem,
-  YStack,
-  H3,
-  fullscreenStyle,
-} from "tamagui";
+import { H3 } from "tamagui";
 
 import { LoginSchema } from "../../utils/validations/auth.utils";
 import { Container } from "../../components/layout/container";

@@ -1,8 +1,19 @@
 import { User } from "../types/user.type";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import * as SecureStore from "expo-secure-store";
 import Toast from "react-native-toast-message";
+import { useSession } from "../ctx/auth";
+import { set } from "zod";
+import { useEffect, useState } from "react";
 
-export const auth = ({
+export const storeTokenToContext = async ({ token }: { token: string }) => {
+  const { setToken } = useSession();
+
+  setToken(token);
+
+  // return tokenFromSecureStore;
+};
+
+export const auth = async ({
   username,
   password,
 }: {
@@ -19,7 +30,17 @@ export const auth = ({
     .then((response) => response.json())
     .then((data) => {
       console.log("Success:", data);
-      AsyncStorage.setItem("userToken", data.token);
+      console.log("token", data.token);
+
+      SecureStore.setItemAsync("userToken", data.token);
+
+      storeTokenToContext(data.token);
+
+      Toast.show({
+        type: "success",
+        text1: "Success",
+        text2: "You are now logged in.",
+      });
     })
     .catch((error) => {
       Toast.show({
@@ -31,7 +52,23 @@ export const auth = ({
     });
 };
 
-export const checkAuth = async () => {
-  const token = await AsyncStorage.getItem("userToken");
-  return !!token;
-};
+// export const checkAuth = async () => {
+//   const [token, setToken] = useState<string | null>(null);
+//   let tokenFromSecureStore = null;
+
+//   SecureStore.getItemAsync("userToken").then((data) => {
+//     if (data) {
+//       setToken(data);
+//     }
+//   });
+
+//   useEffect(() => {
+//     if (token) {
+//       tokenFromSecureStore = "/(tabs)/";
+//     } else {
+//       tokenFromSecureStore = "/";
+//     }
+//   }, []);
+
+//   return tokenFromSecureStore;
+// };

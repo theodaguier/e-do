@@ -2,6 +2,8 @@ import { Link, Tabs } from "expo-router";
 import { Pressable } from "react-native";
 import { Text } from "tamagui";
 import { DarkTheme } from "@react-navigation/native";
+import { Redirect, Stack } from "expo-router";
+import { useSession } from "../../ctx/auth";
 
 import {
   Home,
@@ -12,6 +14,17 @@ import {
 } from "@tamagui/lucide-icons";
 
 export default function TabLayout() {
+  const { token } = useSession();
+
+  // if (isLoading) {
+  //   return <Text>Loading...</Text>;
+  // }
+
+  if (!token) {
+    // On web, static rendering will stop here as the user is not authenticated
+    // in the headless Node process that the pages are rendered in.
+    return <Redirect href="/" />;
+  }
   return (
     <Tabs
       screenOptions={{

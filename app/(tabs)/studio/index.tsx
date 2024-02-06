@@ -1,9 +1,9 @@
 import { View, Text } from "tamagui";
 
-export const StudioScreen = () => {
+export default function StudioScreen() {
   return (
     <View>
       <Text>Studio</Text>
     </View>
   );
-};
+}

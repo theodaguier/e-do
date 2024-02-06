@@ -1,30 +1,15 @@
-import { useState, useEffect } from "react";
-import { Link, Tabs } from "expo-router";
-import { Pressable } from "react-native";
-import { Text } from "tamagui";
+import { Stack } from "expo-router";
 
-import { Home } from "@tamagui/lucide-icons";
 export default function StudioLayout() {
   return (
-    <Tabs
-      screenOptions={{
-        tabBarActiveTintColor: "red",
-      }}
-    >
-      <Tabs.Screen
+    <Stack>
+      <Stack.Screen
         name="index"
         options={{
-          title: "Studio",
-          tabBarIcon: ({ color }) => <Home size={24} color={color} />,
-          // headerRight: () => (
-          //   <Link href="/modal" asChild>
-          //     <Pressable>
-          //       <Text className="px-4">Hello!</Text>
-          //     </Pressable>
-          //   </Link>
-          // ),
+          headerTitle: "Studio",
+          headerShown: false,
         }}
       />
-    </Tabs>
+    </Stack>
   );
 }
