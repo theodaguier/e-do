@@ -7,6 +7,7 @@ const AuthContext = React.createContext({
   token: null,
   setUser: (user: User) => {},
   setToken: (token: string) => {},
+  clearSession: () => {},
 });
 
 export const useSession = () => React.useContext(AuthContext);
@@ -19,8 +20,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 
   React.useEffect(() => {
     SecureStore.getItemAsync("user").then((data) => {
+      console.log("user from secure store", data);
       if (data) {
-        setUser(JSON.parse(data));
+        const userData = JSON.parse(data);
+        setUser(data);
       }
     });
 
@@ -29,10 +32,21 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         setToken(data);
       }
     });
-  }, []);
+  }, []); // Laissez le tableau de dépendances vide pour exécuter l'effet une seule fois
+
+  function clearSession() {
+    SecureStore.deleteItemAsync("user");
+    SecureStore.deleteItemAsync("userToken");
+    setUser(null);
+    setToken(null);
+  }
+
+  // clearSession();
 
   return (
-    <AuthContext.Provider value={{ user, token, setUser, setToken }}>
+    <AuthContext.Provider
+      value={{ user, token, setUser, setToken, clearSession }}
+    >
       {children}
     </AuthContext.Provider>
   );

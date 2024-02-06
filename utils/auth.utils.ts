@@ -1,16 +1,15 @@
 import { User } from "../types/user.type";
 import * as SecureStore from "expo-secure-store";
 import Toast from "react-native-toast-message";
-import { useSession } from "../ctx/auth";
-import { set } from "zod";
-import { useEffect, useState } from "react";
+import { useSession } from "../ctx/auth-context";
+import { router } from "expo-router";
 
-export const storeTokenToContext = async ({ token }: { token: string }) => {
-  const { setToken } = useSession();
+export const storeTokenToSecureStore = async (token: string) => {
+  await SecureStore.setItemAsync("userToken", token);
+};
 
-  setToken(token);
-
-  // return tokenFromSecureStore;
+export const storeUserToSecureStore = async (user: User) => {
+  await SecureStore.setItemAsync("user", JSON.stringify(user));
 };
 
 export const auth = async ({
@@ -20,55 +19,40 @@ export const auth = async ({
   username: User;
   password: User;
 }) => {
-  fetch("http://127.0.0.1:3333/login/", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ username, password }),
-  })
-    .then((response) => response.json())
-    .then((data) => {
-      console.log("Success:", data);
-      console.log("token", data.token);
-
-      SecureStore.setItemAsync("userToken", data.token);
-
-      storeTokenToContext(data.token);
-
-      Toast.show({
-        type: "success",
-        text1: "Success",
-        text2: "You are now logged in.",
-      });
-    })
-    .catch((error) => {
-      Toast.show({
-        type: "error",
-        text1: "Error",
-        text2: "Could not login. Please try again.",
-      });
-      console.error("Error:", error);
+  try {
+    const response = await fetch("http://127.0.0.1:3333/login/", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ username, password }),
     });
+    const data = await response.json();
+
+    console.log("Success:", data);
+    console.log("token", data.token.token);
+    console.log("user test", data.user);
+
+    // Stocker le token et l'utilisateur dans SecureStore
+    await storeTokenToSecureStore(data.token.token);
+    await storeUserToSecureStore(data.user);
+
+    // Rediriger l'utilisateur après la connexion
+    router.navigate("(tabs)");
+
+    // Afficher un message de succès
+    Toast.show({
+      type: "success",
+      text1: "Success",
+      text2: "You are now logged in.",
+    });
+  } catch (error) {
+    // En cas d'erreur, afficher un message d'erreur
+    Toast.show({
+      type: "error",
+      text1: "Error",
+      text2: "Could not login. Please try again.",
+    });
+    console.error("Error:", error);
+  }
 };
-
-// export const checkAuth = async () => {
-//   const [token, setToken] = useState<string | null>(null);
-//   let tokenFromSecureStore = null;
-
-//   SecureStore.getItemAsync("userToken").then((data) => {
-//     if (data) {
-//       setToken(data);
-//     }
-//   });
-
-//   useEffect(() => {
-//     if (token) {
-//       tokenFromSecureStore = "/(tabs)/";
-//     } else {
-//       tokenFromSecureStore = "/";
-//     }
-//   }, []);
-
-//   return tokenFromSecureStore;
-// };

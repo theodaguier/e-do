@@ -13,7 +13,7 @@ import Toast from "react-native-toast-message";
 import { config } from "../tamagui.config";
 import { useFonts } from "expo-font";
 import { useEffect } from "react";
-import { AuthProvider } from "../ctx/auth";
+import { AuthProvider } from "../ctx/auth-context";
 import * as SecureStore from "expo-secure-store";
 
 export {
@@ -21,11 +21,11 @@ export {
   ErrorBoundary,
 } from "expo-router";
 
-export const unstable_settings = {
-  // Ensure that reloading on `/modal` keeps a back button present.
+// export const unstable_settings = {
+//   // Ensure that reloading on `/modal` keeps a back button present.
 
-  initialRouteName: "/",
-};
+//   initialRouteName: "/",
+// };
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();

@@ -1,7 +1,9 @@
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import * as SecureStore from "expo-secure-store";
+import { router } from "expo-router";
+import { useSession } from "../ctx/auth-context";
 
 export const checkToken = async () => {
-  const userToken = await AsyncStorage.getItem("userToken");
+  const userToken = await SecureStore.getItemAsync("userToken");
 
   if (userToken) {
     console.log("userToken", userToken);
@@ -11,8 +13,11 @@ export const checkToken = async () => {
 };
 
 export const removeToken = async () => {
+  const { setToken } = useSession();
   try {
-    await AsyncStorage.removeItem("userToken");
+    await SecureStore.deleteItemAsync("userToken");
+    setToken("");
+    router.navigate("/");
   } catch (e) {
     console.error(e);
   }
