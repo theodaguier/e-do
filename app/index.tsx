@@ -4,7 +4,7 @@ import { useForm, Controller, SubmitHandler } from "react-hook-form";
 import { auth } from "../utils/auth.utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { User } from "../types/user.type";
-import { LoginSchema } from "../utils/validations/auth.utils";
+import { LoginSchema } from "../utils/validations/auth.validation";
 import { router } from "expo-router";
 import { useSession } from "../ctx/auth-context";
 import { useEffect } from "react";

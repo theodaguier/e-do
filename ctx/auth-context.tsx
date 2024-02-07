@@ -22,8 +22,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     SecureStore.getItemAsync("user").then((data) => {
       console.log("user from secure store", data);
       if (data) {
-        const userData = JSON.parse(data);
-        setUser(data);
+        const userData = JSON.parse(data); // Convertir les données en objet JavaScript
+        setUser(userData); // Stocker l'utilisateur dans l'état
       }
     });
 
@@ -40,7 +40,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     setUser(null);
     setToken(null);
   }
-
   // clearSession();
 
   return (

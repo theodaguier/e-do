@@ -6,7 +6,7 @@ export default function ClientsLayout() {
       <Stack.Screen
         name="index"
         options={{
-          headerTitle: "Settings",
+          headerTitle: "Clients",
           headerShown: false,
         }}
       />
