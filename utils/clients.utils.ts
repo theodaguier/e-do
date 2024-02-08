@@ -27,7 +27,7 @@ export const getClientsQuery = async ({
   searchQuery,
 }: {
   token: string;
-  searchQuery: string;
+  searchQuery: string | any;
 }) => {
   const response = await fetch(
     `${process.env.EXPO_PUBLIC_API_URL}/clients?search=${searchQuery}`,

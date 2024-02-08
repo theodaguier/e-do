@@ -5,6 +5,7 @@ import { DarkTheme } from "@react-navigation/native";
 import { useSession } from "../../ctx/auth-context";
 import { Search, PlusCircle } from "@tamagui/lucide-icons";
 import { useSheets } from "@/ctx/sheets-context";
+import { usePathname } from "expo-router";
 
 import {
   Home,
@@ -117,6 +118,14 @@ export default function TabLayout() {
             ),
         }}
       />
+      {/* <Tabs.Screen
+        name="machine-selection"
+        options={{
+          tabBarStyle: {
+            display: usePathname() === "example" ? "none" : "flex",
+          },
+        }}
+      /> */}
     </Tabs>
   );
 }

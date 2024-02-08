@@ -14,7 +14,6 @@ import { config } from "../tamagui.config";
 import { useFonts } from "expo-font";
 import { useEffect } from "react";
 import { AuthProvider } from "../ctx/auth-context";
-import * as SecureStore from "expo-secure-store";
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -68,7 +67,10 @@ function RootLayoutNav() {
             <Stack>
               <Stack.Screen name="index" options={{ headerShown: false }} />
               <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-              <Stack.Screen name="modal" options={{ presentation: "modal" }} />
+              <Stack.Screen
+                name="machine-selection/[slug]"
+                options={{ headerTitle: "Machine", headerBackTitle: "Back" }}
+              />
             </Stack>
           </AuthProvider>
         </ThemeProvider>

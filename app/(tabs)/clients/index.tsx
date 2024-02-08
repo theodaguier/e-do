@@ -16,6 +16,7 @@ import { User, ChevronRight } from "@tamagui/lucide-icons";
 import { ActivityIndicator } from "react-native";
 import { SearchSheet } from "./search-sheet";
 import { CreateClientSheet } from "./create-client-sheet";
+import { router } from "expo-router";
 
 export default function ClientsScreen() {
   const { token } = useSession() as unknown as {
@@ -63,6 +64,9 @@ export default function ClientsScreen() {
             clients.map((client) => (
               <YGroup.Item key={client.id}>
                 <ListItem
+                  onPress={() =>
+                    router.navigate(`clients/details/${client.brand}`)
+                  }
                   icon={User}
                   title={client.brand}
                   subTitle={client.name}
