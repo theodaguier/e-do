@@ -1,12 +1,4 @@
-import {
-  ListItem,
-  YGroup,
-  Separator,
-  XStack,
-  Input,
-  Button,
-  Text,
-} from "tamagui";
+import { ListItem, YGroup, Separator } from "tamagui";
 import { Container } from "../../../components/layout/container";
 import { getClients, getClientsQuery } from "@/utils/clients.utils";
 import { useEffect, useState } from "react";
