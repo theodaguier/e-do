@@ -1,7 +1,7 @@
 import { Text, Button, YStack, H1 } from "tamagui";
 import { Plus } from "@tamagui/lucide-icons";
 import { Container } from "@/components/layout/container";
-import { useLocalSearchParams } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 import { useSession } from "@/ctx/auth-context";
 import { useEffect, useState } from "react";
 import { getClientsQuery } from "@/utils/clients.utils";
@@ -68,7 +68,9 @@ export default function MachineSelectionScreen() {
     });
 
     const responseData = await response.json();
+
     console.log("response", responseData);
+    router.push("/sessions/");
   };
 
   return (

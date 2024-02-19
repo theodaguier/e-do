@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useSheets } from "@/ctx/sheets-context";
 import { Container } from "@/components/layout/container";
 import { XStack, Text, ListItem, YGroup } from "tamagui";

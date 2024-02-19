@@ -37,7 +37,7 @@ const TabOneScreen = () => {
               </Card.Footer>
             </Card>
           </TouchableOpacity>
-          <Card className="bg-blue-300" elevate size="$4" bordered>
+          {/* <Card className="bg-blue-300" elevate size="$4" bordered>
             <Card.Header className="flex flex-row">
               <UserPlus size="24" color="black" />
             </Card.Header>
@@ -46,7 +46,7 @@ const TabOneScreen = () => {
                 Select a client
               </Button>
             </Card.Footer>
-          </Card>
+          </Card> */}
         </XStack>
       </YStack>
     </Container>

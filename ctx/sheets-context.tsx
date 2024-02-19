@@ -9,6 +9,8 @@ type SheetsState = {
   setAddMachineSheet: (sheet: boolean) => void;
   addEquipmentSheet: boolean;
   setAddEquipmentSheet: (sheet: boolean) => void;
+  sessionMachineSheet: boolean;
+  setSessionMachineSheet: (sheet: boolean) => void;
 };
 
 export const useSheets = create<SheetsState>((set) => ({
@@ -20,4 +22,6 @@ export const useSheets = create<SheetsState>((set) => ({
   setAddMachineSheet: (sheet) => set({ addMachineSheet: sheet }),
   addEquipmentSheet: false,
   setAddEquipmentSheet: (sheet) => set({ addEquipmentSheet: sheet }),
+  sessionMachineSheet: false,
+  setSessionMachineSheet: (sheet) => set({ sessionMachineSheet: sheet }),
 }));

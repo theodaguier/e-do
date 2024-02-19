@@ -6,8 +6,15 @@ export default function SessionsLayout() {
       <Stack.Screen
         name="index"
         options={{
-          headerTitle: "Settings",
+          headerTitle: "Sessions",
           headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="sessionDetails/[slug]"
+        options={{
+          headerTitle: "Session details",
+          headerShown: true,
         }}
       />
     </Stack>
