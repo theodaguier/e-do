@@ -11,6 +11,8 @@ type SheetsState = {
   setAddEquipmentSheet: (sheet: boolean) => void;
   sessionMachineSheet: boolean;
   setSessionMachineSheet: (sheet: boolean) => void;
+  filterSheet: boolean;
+  setFilterSheet: (sheet: boolean) => void;
 };
 
 export const useSheets = create<SheetsState>((set) => ({
@@ -24,4 +26,6 @@ export const useSheets = create<SheetsState>((set) => ({
   setAddEquipmentSheet: (sheet) => set({ addEquipmentSheet: sheet }),
   sessionMachineSheet: false,
   setSessionMachineSheet: (sheet) => set({ sessionMachineSheet: sheet }),
+  filterSheet: false,
+  setFilterSheet: (sheet) => set({ filterSheet: sheet }),
 }));

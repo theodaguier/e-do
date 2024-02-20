@@ -3,7 +3,7 @@ import { Pressable } from "react-native";
 import { Text, Avatar, View } from "tamagui";
 import { DarkTheme } from "@react-navigation/native";
 import { useSession } from "../../ctx/auth-context";
-import { Search, PlusCircle } from "@tamagui/lucide-icons";
+import { Search, PlusCircle, Filter } from "@tamagui/lucide-icons";
 import { useSheets } from "@/ctx/sheets-context";
 import { usePathname } from "expo-router";
 
@@ -29,6 +29,8 @@ export default function TabLayout() {
     setSearchSheet,
     createClientSheet,
     setCreateClientSheet,
+    filterSheet,
+    setFilterSheet,
   } = useSheets();
 
   if (!token) {
@@ -60,6 +62,30 @@ export default function TabLayout() {
         options={{
           title: "Studio",
           tabBarIcon: ({ color }) => <KanbanSquare size={24} color={color} />,
+          headerRight: () => (
+            <View className="px-4">
+              <Pressable
+                className="w-8 h-8 rounded-full bg-yellow-300 p-2 justify-center items-center"
+                onPress={
+                  filterSheet
+                    ? () => setFilterSheet(false)
+                    : () => setFilterSheet(true)
+                }
+              >
+                <Filter size={20} color="#F59E0B" />
+              </Pressable>
+            </View>
+          ),
+          headerLeft: () => (
+            <View className="px-4">
+              <Pressable
+                className="w-8 h-8 rounded-full bg-green-300 p-2 justify-center items-center"
+                onPress={() => console.log("Filtering...")}
+              >
+                <PlusCircle size={20} color="#10B981" />
+              </Pressable>
+            </View>
+          ),
         }}
       />
       <Tabs.Screen

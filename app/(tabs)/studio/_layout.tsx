@@ -1,4 +1,5 @@
 import { Stack } from "expo-router";
+import { Filter } from "@tamagui/lucide-icons";
 
 export default function StudioLayout() {
   return (
