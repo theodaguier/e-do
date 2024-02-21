@@ -22,8 +22,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     SecureStore.getItemAsync("user").then((data) => {
       console.log("user from secure store", data);
       if (data) {
-        const userData = JSON.parse(data); // Convertir les données en objet JavaScript
-        setUser(userData); // Stocker l'utilisateur dans l'état
+        const userData = JSON.parse(data);
+        setUser(userData);
       }
     });
 
@@ -32,7 +32,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         setToken(data);
       }
     });
-  }, []); // Laissez le tableau de dépendances vide pour exécuter l'effet une seule fois
+  }, []);
 
   function clearSession() {
     SecureStore.deleteItemAsync("user");

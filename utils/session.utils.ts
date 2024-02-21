@@ -51,3 +51,25 @@ export const getSessionQuery = async ({
   const responseData = await response.json();
   return responseData;
 };
+
+export const updateSession = async ({
+  session,
+  token,
+}: {
+  session: any;
+  token: string;
+}) => {
+  const response = await fetch(
+    `${process.env.EXPO_PUBLIC_API_URL}/session/${session.id}`,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+      method: "PATCH",
+      body: JSON.stringify(session),
+    }
+  );
+
+  return response;
+};

@@ -6,9 +6,11 @@ export type SessionType = {
   machinesSession: [
     {
       startTime: string | number | Date;
+      endTime: string | number | Date;
       id: string;
       name: string;
       start: string;
+      end: string;
     }
   ];
 };

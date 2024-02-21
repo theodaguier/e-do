@@ -10,11 +10,13 @@ import { AddMachinesSheet } from "./add-machines-sheet";
 import { useSheets } from "@/ctx/sheets-context";
 import { useSessionCreation } from "@/ctx/session-creation-context";
 import { storeSession } from "@/utils/session.utils";
+import { User } from "@/types/user.type";
 
 export default function MachineSelectionScreen() {
   const { slug } = useLocalSearchParams();
-  const { token } = useSession() as unknown as {
+  const { token, user } = useSession() as unknown as {
     token: string;
+    user: User;
   };
 
   const { addMachineSheet, setAddMachineSheet } = useSheets();
@@ -36,6 +38,8 @@ export default function MachineSelectionScreen() {
       {
         client: sessionClient,
         machinesSession: machinesSession,
+        creatorId: user.id,
+        creator: user,
       },
     ]);
   }, [machinesSession]);

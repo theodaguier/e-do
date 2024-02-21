@@ -1,25 +1,29 @@
 import { useLocalSearchParams } from "expo-router";
-import { YStack, YGroup, Separator, ListItem, Button, XStack } from "tamagui";
-import { getSessionQuery } from "@/utils/session.utils";
+import { YStack, YGroup, Separator, ListItem, Button } from "tamagui";
+import { getSessionQuery, updateSession } from "@/utils/session.utils";
 import { useState, useEffect } from "react";
 import { useSession } from "@/ctx/auth-context";
 import { Container } from "@/components/layout/container";
 import { SessionType } from "@/types/session.type";
 import { LiveTimer } from "@/components/timer";
 import { Timer, Info } from "@tamagui/lucide-icons";
-import { SessionMachineActionsSheet } from "./actions-sheet";
 import { useSheets } from "@/ctx/sheets-context";
-import { AddMachinesSheet } from "@/app/machine-selection/add-machines-sheet";
+import { SessionAddMachinesSheet } from "./session-add-machines-sheet";
+import { MachineType } from "@/app/machine-selection/add-machines-sheet";
 
 export default function SessionDetailsPage() {
   const { slug } = useLocalSearchParams();
-
   const { token } = useSession() as unknown as {
     token: string;
   };
-  const [session, setSession] = useState<SessionType>();
 
-  const { addMachineSheet, setAddMachineSheet } = useSheets();
+  const [session, setSession] = useState<SessionType>();
+  console.log("session:", session);
+
+  const { setAddMachineSheet } = useSheets();
+  const [machinesSession, setMachinesSession] = useState<MachineType[]>([]);
+
+  console.log("machinesSession:", machinesSession);
 
   useEffect(() => {
     const searchQuery = slug.toString();
@@ -33,6 +37,65 @@ export default function SessionDetailsPage() {
     };
     fetchClient();
   }, [slug, token]);
+
+  const handleMachineSelect = (machine: MachineType) => {
+    const isMachineSelected = machinesSession.some(
+      (selectedMachine) => selectedMachine.name === machine.name
+    );
+
+    if (isMachineSelected) {
+      setMachinesSession((prevSelected) =>
+        prevSelected.filter(
+          (selectedMachine) => selectedMachine.name !== machine.name
+        )
+      );
+    } else {
+      setMachinesSession((prevSelected) => [
+        ...prevSelected,
+        { ...machine, start: new Date().toISOString() },
+      ]);
+    }
+  };
+
+  const updateMachines = (machine: MachineType) => {
+    const updatedMachines = machinesSession.map((selectedMachine) => {
+      if (selectedMachine.name === machine.name) {
+        return machine;
+      }
+      return selectedMachine;
+    });
+
+    setMachinesSession(updatedMachines);
+  };
+
+  useEffect(() => {
+    if (session && machinesSession.length > 0) {
+      const newMachines = machinesSession.filter(
+        (newMachine) =>
+          !session.machinesSession.some(
+            (existingMachine) => existingMachine.name === newMachine.name
+          )
+      );
+
+      const updatedSession = {
+        ...session,
+        machinesSession: [...session.machinesSession, ...newMachines],
+      };
+
+      setSession(updatedSession as SessionType);
+      updateSession({ session: updatedSession, token });
+    }
+  }, [machinesSession]);
+
+  const stopSession = () => {
+    session?.machinesSession.map((machine) => {
+      machine.endTime = new Date().toISOString();
+    });
+
+    console.log("session updated:", session);
+
+    updateSession({ session, token });
+  };
 
   return (
     <Container>
@@ -82,10 +145,12 @@ export default function SessionDetailsPage() {
           <Button onPress={() => setAddMachineSheet(true)}>Add Machine</Button>
         </YGroup>
         <YGroup className="min-w-full" space>
-          <Button backgroundColor="#EF4444">Stop Session</Button>
+          <Button onPress={stopSession} backgroundColor="#EF4444">
+            Stop Session
+          </Button>
         </YGroup>
       </YStack>
-      <AddMachinesSheet />
+      <SessionAddMachinesSheet setMachinesSession={setMachinesSession} />
     </Container>
   );
 }

@@ -1,4 +1,4 @@
-import { View, Text, ListItem, YGroup, Separator } from "tamagui";
+import { ListItem, YGroup, Separator } from "tamagui";
 import { ActivityIndicator } from "react-native";
 import { Container } from "../../../components/layout/container";
 import { useSession } from "@/ctx/auth-context";
