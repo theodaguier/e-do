@@ -1,12 +1,20 @@
+import clsx from "clsx";
 import { useLocalSearchParams } from "expo-router";
-import { YStack, YGroup, Separator, ListItem, Button } from "tamagui";
+import {
+  YStack,
+  YGroup,
+  Separator,
+  ListItem,
+  Button,
+  SizableText,
+} from "tamagui";
 import { getSessionQuery, updateSession } from "@/utils/session.utils";
 import { useState, useEffect } from "react";
 import { useSession } from "@/ctx/auth-context";
 import { Container } from "@/components/layout/container";
 import { SessionType } from "@/types/session.type";
 import { LiveTimer } from "@/components/timer";
-import { Timer, Info } from "@tamagui/lucide-icons";
+import { Timer, Info, Pause } from "@tamagui/lucide-icons";
 import { useSheets } from "@/ctx/sheets-context";
 import { SessionAddMachinesSheet } from "./session-add-machines-sheet";
 import { MachineType } from "@/app/machine-selection/add-machines-sheet";
@@ -99,7 +107,7 @@ export default function SessionDetailsPage() {
 
   return (
     <Container>
-      <YStack space>
+      <YStack space className="mb-8">
         <YGroup className="min-w-full" separator={<Separator />}>
           <YGroup.Item>
             <ListItem title={`Brand: ${session?.client.brand}`} />
@@ -126,11 +134,32 @@ export default function SessionDetailsPage() {
               >
                 <YGroup.Item>
                   <ListItem
-                    icon={Timer}
-                    title={machine.name}
-                    iconAfter={Info}
+                    icon={machine.endTime === null ? <Pause /> : <Timer />}
+                    className={clsx(
+                      "flex justify-between items-center",
+                      machine.endTime === null
+                        ? "text-red-500"
+                        : "text-green-500"
+                    )}
+                    title={
+                      <SizableText
+                        className={clsx(
+                          "flex justify-between items-center",
+                          machine.endTime === null
+                            ? "text-red-500"
+                            : "text-green-500"
+                        )}
+                      >
+                        {machine.name}
+                      </SizableText>
+                    }
+                    iconAfter={machine.endTime === null ? null : <Info />}
                     subTitle={
-                      <LiveTimer startTime={new Date(machine.startTime)} />
+                      machine.endTime === null ? (
+                        "Machine stopped"
+                      ) : (
+                        <LiveTimer startTime={new Date(machine.startTime)} />
+                      )
                     }
                   />
                 </YGroup.Item>
@@ -139,10 +168,23 @@ export default function SessionDetailsPage() {
           </YGroup.Item>
         </YGroup>
         <YGroup className="min-w-full" space>
-          <Button>Add Equipment</Button>
+          <Button backgroundColor="#3B82F6">Add Equipment</Button>
         </YGroup>
         <YGroup className="min-w-full" space>
-          <Button onPress={() => setAddMachineSheet(true)}>Add Machine</Button>
+          <Button
+            onPress={() => setAddMachineSheet(true)}
+            backgroundColor="#3B82F6"
+          >
+            Add Machine
+          </Button>
+        </YGroup>
+        <YGroup className="min-w-full" space>
+          <Button
+            onPress={() => setAddMachineSheet(true)}
+            backgroundColor="#3B82F6"
+          >
+            Add a note
+          </Button>
         </YGroup>
         <YGroup className="min-w-full" space>
           <Button onPress={stopSession} backgroundColor="#EF4444">
