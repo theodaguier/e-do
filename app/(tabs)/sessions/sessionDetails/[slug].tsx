@@ -18,6 +18,7 @@ import { Timer, Info, Pause } from "@tamagui/lucide-icons";
 import { useSheets } from "@/ctx/sheets-context";
 import { SessionAddMachinesSheet } from "./session-add-machines-sheet";
 import { MachineType } from "@/app/machine-selection/add-machines-sheet";
+import { Touchable, TouchableOpacity } from "react-native";
 
 export default function SessionDetailsPage() {
   const { slug } = useLocalSearchParams();
@@ -105,6 +106,26 @@ export default function SessionDetailsPage() {
     updateSession({ session, token });
   };
 
+  const updateMachineEndTime = (machineToUpdate: MachineType) => {
+    const updatedMachines = session?.machinesSession.map((machine) => {
+      if (machine.name === machineToUpdate.name) {
+        return {
+          ...machine,
+          endTime: new Date().toISOString(),
+        };
+      }
+      return machine;
+    });
+
+    const updatedSession = {
+      ...session,
+      machinesSession: updatedMachines,
+    };
+
+    setSession(updatedSession);
+    updateSession({ session: updatedSession, token });
+  };
+
   return (
     <Container>
       <YStack space className="mb-8">
@@ -133,35 +154,39 @@ export default function SessionDetailsPage() {
                 space
               >
                 <YGroup.Item>
-                  <ListItem
-                    icon={machine.endTime === null ? <Pause /> : <Timer />}
-                    className={clsx(
-                      "flex justify-between items-center",
-                      machine.endTime === null
-                        ? "text-red-500"
-                        : "text-green-500"
-                    )}
-                    title={
-                      <SizableText
-                        className={clsx(
-                          "flex justify-between items-center",
-                          machine.endTime === null
-                            ? "text-red-500"
-                            : "text-green-500"
-                        )}
-                      >
-                        {machine.name}
-                      </SizableText>
-                    }
-                    iconAfter={machine.endTime === null ? null : <Info />}
-                    subTitle={
-                      machine.endTime === null ? (
-                        "Machine stopped"
-                      ) : (
-                        <LiveTimer startTime={new Date(machine.startTime)} />
-                      )
-                    }
-                  />
+                  <TouchableOpacity
+                    onPress={() => updateMachineEndTime(machine)}
+                  >
+                    <ListItem
+                      icon={machine.endTime === null ? <Timer /> : <Pause />}
+                      className={clsx(
+                        "flex justify-between items-center",
+                        machine.endTime === null
+                          ? "text-green-500"
+                          : "text-red-500"
+                      )}
+                      title={
+                        <SizableText
+                          className={clsx(
+                            "flex justify-between items-center",
+                            machine.endTime === null
+                              ? "text-green-500"
+                              : "text-red-500"
+                          )}
+                        >
+                          {machine.name}
+                        </SizableText>
+                      }
+                      iconAfter={machine.endTime === null ? <Info /> : null}
+                      subTitle={
+                        machine.endTime === null ? (
+                          <LiveTimer startTime={new Date(machine.startTime)} />
+                        ) : (
+                          "Machine stopped"
+                        )
+                      }
+                    />
+                  </TouchableOpacity>
                 </YGroup.Item>
               </YGroup>
             ))}
