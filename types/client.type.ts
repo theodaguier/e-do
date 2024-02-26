@@ -1,5 +1,4 @@
 export type Client = {
-  category: string;
   id?: number;
   name: string | null;
   brand: string | null;

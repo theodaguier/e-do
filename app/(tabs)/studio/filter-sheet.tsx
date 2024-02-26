@@ -1,10 +1,9 @@
-// filter-sheet.tsx
-
 import clsx from "clsx";
 import { useEquipmentFilter } from "@/ctx/equipment-filter-context";
 import { useSheets } from "@/ctx/sheets-context";
 import { ListItem, XStack, YGroup } from "tamagui";
 import { Sheet } from "tamagui";
+import { set } from "zod";
 
 export const FilterSheet = () => {
   const { selectedCategory, setSelectedCategory } = useEquipmentFilter();

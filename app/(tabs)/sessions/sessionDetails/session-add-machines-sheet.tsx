@@ -14,12 +14,23 @@ export type MachineType = {
 };
 
 export const SessionAddMachinesSheet = ({
+  machinesSession,
   setMachinesSession,
 }: {
+  machinesSession: MachineType[];
   setMachinesSession: (machines: MachineType[]) => void;
 }) => {
   const { addMachineSheet, setAddMachineSheet } = useSheets();
   const [selectedMachines, setSelectedMachines] = useState<MachineType[]>([]);
+
+  const isMachineInSession = (machine: MachineType) => {
+    if (machinesSession) {
+      return machinesSession.some(
+        (sessionMachine) => sessionMachine.name === machine.name
+      );
+    }
+    return false;
+  };
 
   const machines: MachineType[] = [
     { id: 1, name: "Vertical" },
@@ -68,11 +79,10 @@ export const SessionAddMachinesSheet = ({
                 <ListItem
                   key={index}
                   onPress={() => handleMachineSelect(machine)}
+                  disabled={isMachineInSession(machine)}
                   className={clsx(
                     "min-w-full",
-                    selectedMachines.some(
-                      (selectedMachine) => selectedMachine.name === machine.name
-                    ) && "bg-blue-500"
+                    isMachineInSession(machine) && "bg-blue-200"
                   )}
                   iconAfter={
                     selectedMachines.some(

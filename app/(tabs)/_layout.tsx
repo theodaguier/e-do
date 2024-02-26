@@ -31,6 +31,8 @@ export default function TabLayout() {
     setCreateClientSheet,
     filterSheet,
     setFilterSheet,
+    createEquipmentSheet,
+    setCreateEquipmentSheet,
   } = useSheets();
 
   if (!token) {
@@ -80,7 +82,7 @@ export default function TabLayout() {
             <View className="px-4">
               <Pressable
                 className="w-8 h-8 rounded-full bg-green-300 p-2 justify-center items-center"
-                onPress={() => console.log("Filtering...")}
+                onPress={() => setCreateEquipmentSheet(true)}
               >
                 <PlusCircle size={20} color="#10B981" />
               </Pressable>

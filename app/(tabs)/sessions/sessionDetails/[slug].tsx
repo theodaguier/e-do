@@ -7,6 +7,8 @@ import {
   ListItem,
   Button,
   SizableText,
+  Dialog,
+  XStack,
 } from "tamagui";
 import { getSessionQuery, updateSession } from "@/utils/session.utils";
 import { useState, useEffect } from "react";
@@ -14,11 +16,11 @@ import { useSession } from "@/ctx/auth-context";
 import { Container } from "@/components/layout/container";
 import { SessionType } from "@/types/session.type";
 import { LiveTimer } from "@/components/timer";
-import { Timer, Info, Pause } from "@tamagui/lucide-icons";
+import { Timer, Info, Pause, X } from "@tamagui/lucide-icons";
 import { useSheets } from "@/ctx/sheets-context";
 import { SessionAddMachinesSheet } from "./session-add-machines-sheet";
 import { MachineType } from "@/app/machine-selection/add-machines-sheet";
-import { Touchable, TouchableOpacity } from "react-native";
+import { TouchableOpacity } from "react-native";
 
 export default function SessionDetailsPage() {
   const { slug } = useLocalSearchParams();
@@ -122,13 +124,14 @@ export default function SessionDetailsPage() {
       machinesSession: updatedMachines,
     };
 
-    setSession(updatedSession);
+    setSession(updatedSession as SessionType);
     updateSession({ session: updatedSession, token });
   };
 
   return (
     <Container>
       <YStack space className="mb-8">
+        <SizableText className="text-2xl">Client</SizableText>
         <YGroup className="min-w-full" separator={<Separator />}>
           <YGroup.Item>
             <ListItem title={`Brand: ${session?.client.brand}`} />
@@ -145,52 +148,50 @@ export default function SessionDetailsPage() {
           <YGroup.Item>
             <ListItem title={`Siren: ${session?.client.siren}`} />
           </YGroup.Item>
-          <YGroup.Item>
-            {session?.machinesSession.map((machine) => (
-              <YGroup
-                className="max-w-full"
-                key={machine.id}
-                separator={<Separator />}
-                space
-              >
-                <YGroup.Item>
-                  <TouchableOpacity
-                    onPress={() => updateMachineEndTime(machine)}
-                  >
-                    <ListItem
-                      icon={machine.endTime === null ? <Timer /> : <Pause />}
-                      className={clsx(
-                        "flex justify-between items-center",
-                        machine.endTime === null
-                          ? "text-green-500"
-                          : "text-red-500"
-                      )}
-                      title={
-                        <SizableText
-                          className={clsx(
-                            "flex justify-between items-center",
-                            machine.endTime === null
-                              ? "text-green-500"
-                              : "text-red-500"
-                          )}
-                        >
-                          {machine.name}
-                        </SizableText>
-                      }
-                      iconAfter={machine.endTime === null ? <Info /> : null}
-                      subTitle={
-                        machine.endTime === null ? (
-                          <LiveTimer startTime={new Date(machine.startTime)} />
-                        ) : (
-                          "Machine stopped"
-                        )
-                      }
-                    />
-                  </TouchableOpacity>
-                </YGroup.Item>
-              </YGroup>
-            ))}
-          </YGroup.Item>
+
+          <SizableText className="text-2xl">Machines</SizableText>
+          {session?.machinesSession.map((machine) => (
+            <YGroup
+              className="max-w-full"
+              key={machine.id}
+              separator={<Separator />}
+              space
+            >
+              <YGroup.Item>
+                <TouchableOpacity onPress={() => updateMachineEndTime(machine)}>
+                  <ListItem
+                    icon={machine.endTime === null ? <Timer /> : <Pause />}
+                    className={clsx(
+                      "flex justify-between items-center",
+                      machine.endTime === null
+                        ? "text-green-500"
+                        : "text-red-500"
+                    )}
+                    title={
+                      <SizableText
+                        className={clsx(
+                          "flex justify-between items-center",
+                          machine.endTime === null
+                            ? "text-green-500"
+                            : "text-red-500"
+                        )}
+                      >
+                        {machine.name}
+                      </SizableText>
+                    }
+                    iconAfter={machine.endTime === null ? <Info /> : null}
+                    subTitle={
+                      machine.endTime === null ? (
+                        <LiveTimer startTime={new Date(machine.startTime)} />
+                      ) : (
+                        "Machine stopped"
+                      )
+                    }
+                  />
+                </TouchableOpacity>
+              </YGroup.Item>
+            </YGroup>
+          ))}
         </YGroup>
         <YGroup className="min-w-full" space>
           <Button backgroundColor="#3B82F6">Add Equipment</Button>
@@ -203,21 +204,47 @@ export default function SessionDetailsPage() {
             Add Machine
           </Button>
         </YGroup>
-        <YGroup className="min-w-full" space>
+        {/* <YGroup className="min-w-full" space>
           <Button
             onPress={() => setAddMachineSheet(true)}
             backgroundColor="#3B82F6"
           >
             Add a note
           </Button>
-        </YGroup>
+        </YGroup> */}
         <YGroup className="min-w-full" space>
           <Button onPress={stopSession} backgroundColor="#EF4444">
             Stop Session
           </Button>
         </YGroup>
       </YStack>
-      <SessionAddMachinesSheet setMachinesSession={setMachinesSession} />
+      <SessionAddMachinesSheet
+        machineSession={
+          session?.machinesSession.map((machine) => machine.name) || []
+        }
+        setMachinesSession={setMachinesSession}
+      />
+
+      {/* <Dialog modal open>
+        <Dialog.Trigger>
+          <Button>Open Dialog</Button>
+        </Dialog.Trigger>
+        <Dialog.Portal>
+          <Dialog.Overlay />
+          <Dialog.Content className="space-y-4">
+            <Dialog.Description>
+              Do you want to stop the machine ?
+            </Dialog.Description>
+
+            <XStack space>
+              <Button className="bg-blue-500 flex-1">Confirm</Button>
+              <Button className="bg-red-500 flex-1">Cancel</Button>
+            </XStack>
+
+            <Dialog.Close />
+          </Dialog.Content>
+        </Dialog.Portal>
+      </Dialog> */}
     </Container>
   );
 }

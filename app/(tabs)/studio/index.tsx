@@ -4,16 +4,32 @@ import { ListItem, YGroup, Separator } from "tamagui";
 import { Container } from "../../../components/layout/container";
 import { getEquipments } from "@/utils/equipments.utils";
 import { useSession } from "@/ctx/auth-context";
-import { Client } from "@/types/client.type";
 import { Star, ChevronRight } from "@tamagui/lucide-icons";
 import { FilterSheet } from "./filter-sheet";
 import { useEquipmentFilter } from "@/ctx/equipment-filter-context";
+import { CreateEquipmentForm } from "./create-equipment-form-sheet";
+import { Equipment } from "@/types/equipment.type";
+import { EquipmentDetailsSheet } from "./equipment-details-sheet";
+import { useSheets } from "@/ctx/sheets-context";
+import { set } from "zod";
 
 export default function StudioScreen() {
   const { token } = useSession() as unknown as { token: string };
 
+  const { equipmentDetailsSheet, setEquipmentDetailsSheet } = useSheets();
   const { selectedCategory } = useEquipmentFilter();
-  const [equipments, setEquipments] = useState<Client[]>([]);
+  const [selectedEquipment, setSelectedEquipment] = useState<Equipment | null>(
+    null
+  );
+
+  console.log("selectedEquipment", selectedEquipment);
+
+  const [equipments, setEquipments] = useState<Equipment[]>([]);
+
+  const handleEquipmentSelect = (equipment: Equipment) => {
+    setEquipmentDetailsSheet(true);
+    setSelectedEquipment(equipment);
+  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -42,9 +58,7 @@ export default function StudioScreen() {
               .map((equipment) => (
                 <YGroup.Item key={equipment.id}>
                   <ListItem
-                    // onPress={() =>
-                    //   router.navigate(`studio/details/${equipment.brand}`)
-                    // }
+                    onPress={() => handleEquipmentSelect(equipment)}
                     icon={Star}
                     title={equipment.name}
                     subTitle={equipment.category}
@@ -58,6 +72,9 @@ export default function StudioScreen() {
         </YGroup>
       </Container>
       <FilterSheet />
+      <EquipmentDetailsSheet equipment={selectedEquipment} />
+
+      <CreateEquipmentForm />
     </>
   );
 }

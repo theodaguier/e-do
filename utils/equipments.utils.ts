@@ -1,4 +1,4 @@
-import { Client } from "../types/client.type";
+import { Equipment } from "../types/equipment.type";
 import Toast from "react-native-toast-message";
 
 export const getEquipments = async ({ token }: { token: string }) => {
@@ -54,10 +54,10 @@ export const getEquipmentsQuery = async ({
 
 export const createEquipment = async ({
   token,
-  client,
+  equipment,
 }: {
   token: string;
-  client: Client;
+  equipment: Equipment;
 }) => {
   const response = await fetch(`${process.env.EXPO_PUBLIC_API_URL}/equipment`, {
     headers: {
@@ -65,7 +65,7 @@ export const createEquipment = async ({
       "Content-Type": "application/json",
     },
     method: "POST",
-    body: JSON.stringify(client),
+    body: JSON.stringify(equipment),
   });
 
   if (!response.ok) {
