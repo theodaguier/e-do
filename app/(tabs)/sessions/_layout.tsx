@@ -11,7 +11,7 @@ export default function SessionsLayout() {
         }}
       />
       <Stack.Screen
-        name="sessionDetails/[slug]"
+        name="session-details/[slug]"
         options={{
           headerTitle: "Session details",
           headerShown: true,

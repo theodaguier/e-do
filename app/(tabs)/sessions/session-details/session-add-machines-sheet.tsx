@@ -14,23 +14,14 @@ export type MachineType = {
 };
 
 export const SessionAddMachinesSheet = ({
-  machinesSession,
   setMachinesSession,
+  machinesInSession,
 }: {
-  machinesSession: MachineType[];
   setMachinesSession: (machines: MachineType[]) => void;
+  machinesInSession: string[] | any;
 }) => {
   const { addMachineSheet, setAddMachineSheet } = useSheets();
   const [selectedMachines, setSelectedMachines] = useState<MachineType[]>([]);
-
-  const isMachineInSession = (machine: MachineType) => {
-    if (machinesSession) {
-      return machinesSession.some(
-        (sessionMachine) => sessionMachine.name === machine.name
-      );
-    }
-    return false;
-  };
 
   const machines: MachineType[] = [
     { id: 1, name: "Vertical" },
@@ -59,6 +50,10 @@ export const SessionAddMachinesSheet = ({
     }
   };
 
+  const filterMachines = (machine: MachineType) => {
+    return !machinesInSession.includes(machine.name);
+  };
+
   useEffect(() => {
     setMachinesSession(selectedMachines);
   }, [selectedMachines]);
@@ -75,15 +70,11 @@ export const SessionAddMachinesSheet = ({
         <Container>
           <XStack className="min-w-full" alignItems="center" space="$2">
             <YGroup space="$2">
-              {machines.map((machine, index) => (
+              {machines.filter(filterMachines).map((machine, index) => (
                 <ListItem
                   key={index}
                   onPress={() => handleMachineSelect(machine)}
-                  disabled={isMachineInSession(machine)}
-                  className={clsx(
-                    "min-w-full",
-                    isMachineInSession(machine) && "bg-blue-200"
-                  )}
+                  className={clsx("min-w-full")}
                   iconAfter={
                     selectedMachines.some(
                       (selectedMachine) => selectedMachine.name === machine.name

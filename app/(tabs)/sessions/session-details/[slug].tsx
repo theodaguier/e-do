@@ -7,8 +7,6 @@ import {
   ListItem,
   Button,
   SizableText,
-  Dialog,
-  XStack,
 } from "tamagui";
 import { getSessionQuery, updateSession } from "@/utils/session.utils";
 import { useState, useEffect } from "react";
@@ -20,7 +18,7 @@ import { Timer, Info, Pause, X } from "@tamagui/lucide-icons";
 import { useSheets } from "@/ctx/sheets-context";
 import { SessionAddMachinesSheet } from "./session-add-machines-sheet";
 import { MachineType } from "@/app/machine-selection/add-machines-sheet";
-import { TouchableOpacity } from "react-native";
+import * as DropdownMenu from "zeego/dropdown-menu";
 
 export default function SessionDetailsPage() {
   const { slug } = useLocalSearchParams();
@@ -34,7 +32,11 @@ export default function SessionDetailsPage() {
   const { setAddMachineSheet } = useSheets();
   const [machinesSession, setMachinesSession] = useState<MachineType[]>([]);
 
-  console.log("machinesSession:", machinesSession);
+  const machinesInSession = session?.machinesSession.map(
+    (machine) => machine.name
+  );
+
+  console.log("machinesInSession:", machinesInSession);
 
   useEffect(() => {
     const searchQuery = slug.toString();
@@ -48,36 +50,6 @@ export default function SessionDetailsPage() {
     };
     fetchClient();
   }, [slug, token]);
-
-  const handleMachineSelect = (machine: MachineType) => {
-    const isMachineSelected = machinesSession.some(
-      (selectedMachine) => selectedMachine.name === machine.name
-    );
-
-    if (isMachineSelected) {
-      setMachinesSession((prevSelected) =>
-        prevSelected.filter(
-          (selectedMachine) => selectedMachine.name !== machine.name
-        )
-      );
-    } else {
-      setMachinesSession((prevSelected) => [
-        ...prevSelected,
-        { ...machine, start: new Date().toISOString() },
-      ]);
-    }
-  };
-
-  const updateMachines = (machine: MachineType) => {
-    const updatedMachines = machinesSession.map((selectedMachine) => {
-      if (selectedMachine.name === machine.name) {
-        return machine;
-      }
-      return selectedMachine;
-    });
-
-    setMachinesSession(updatedMachines);
-  };
 
   useEffect(() => {
     if (session && machinesSession.length > 0) {
@@ -150,47 +122,67 @@ export default function SessionDetailsPage() {
           </YGroup.Item>
 
           <SizableText className="text-2xl">Machines</SizableText>
-          {session?.machinesSession.map((machine) => (
-            <YGroup
-              className="max-w-full"
-              key={machine.id}
-              separator={<Separator />}
-              space
-            >
-              <YGroup.Item>
-                <TouchableOpacity onPress={() => updateMachineEndTime(machine)}>
-                  <ListItem
-                    icon={machine.endTime === null ? <Timer /> : <Pause />}
-                    className={clsx(
-                      "flex justify-between items-center",
-                      machine.endTime === null
-                        ? "text-green-500"
-                        : "text-red-500"
-                    )}
-                    title={
-                      <SizableText
-                        className={clsx(
-                          "flex justify-between items-center",
-                          machine.endTime === null
-                            ? "text-green-500"
-                            : "text-red-500"
-                        )}
-                      >
-                        {machine.name}
-                      </SizableText>
-                    }
-                    iconAfter={machine.endTime === null ? <Info /> : null}
-                    subTitle={
-                      machine.endTime === null ? (
-                        <LiveTimer startTime={new Date(machine.startTime)} />
-                      ) : (
-                        "Machine stopped"
-                      )
-                    }
+          {session?.machinesSession.map((machine, index) => (
+            <DropdownMenu.Root>
+              <DropdownMenu.Trigger>
+                <YGroup
+                  className="max-w-full"
+                  key={index}
+                  separator={<Separator />}
+                  space
+                >
+                  <YGroup.Item>
+                    <ListItem
+                      icon={machine.endTime === null ? <Timer /> : <Pause />}
+                      className={clsx(
+                        "flex justify-between items-center",
+                        machine.endTime === null
+                          ? "text-green-500"
+                          : "text-red-500"
+                      )}
+                      title={
+                        <SizableText
+                          className={clsx(
+                            "flex justify-between items-center",
+                            machine.endTime === null
+                              ? "text-green-500"
+                              : "text-red-500"
+                          )}
+                        >
+                          {machine.name}
+                        </SizableText>
+                      }
+                      iconAfter={machine.endTime === null ? <Info /> : null}
+                      subTitle={
+                        machine.endTime === null ? (
+                          <LiveTimer startTime={new Date(machine.startTime)} />
+                        ) : (
+                          "Machine stopped"
+                        )
+                      }
+                    />
+                  </YGroup.Item>
+                </YGroup>
+              </DropdownMenu.Trigger>
+              <DropdownMenu.Content>
+                <DropdownMenu.Label>{machine.name}</DropdownMenu.Label>
+                <DropdownMenu.Item
+                  key={machine.id}
+                  destructive
+                  disabled={machine.endTime !== null}
+                  onSelect={() => updateMachineEndTime(machine)}
+                >
+                  <DropdownMenu.ItemIcon
+                    ios={{
+                      name: "stop.circle",
+                    }}
                   />
-                </TouchableOpacity>
-              </YGroup.Item>
-            </YGroup>
+                  <DropdownMenu.ItemTitle>Stop machine</DropdownMenu.ItemTitle>
+                </DropdownMenu.Item>
+                <DropdownMenu.Separator />
+                <DropdownMenu.Arrow />
+              </DropdownMenu.Content>
+            </DropdownMenu.Root>
           ))}
         </YGroup>
         <YGroup className="min-w-full" space>
@@ -219,32 +211,9 @@ export default function SessionDetailsPage() {
         </YGroup>
       </YStack>
       <SessionAddMachinesSheet
-        machineSession={
-          session?.machinesSession.map((machine) => machine.name) || []
-        }
         setMachinesSession={setMachinesSession}
+        machinesInSession={machinesInSession ?? []}
       />
-
-      {/* <Dialog modal open>
-        <Dialog.Trigger>
-          <Button>Open Dialog</Button>
-        </Dialog.Trigger>
-        <Dialog.Portal>
-          <Dialog.Overlay />
-          <Dialog.Content className="space-y-4">
-            <Dialog.Description>
-              Do you want to stop the machine ?
-            </Dialog.Description>
-
-            <XStack space>
-              <Button className="bg-blue-500 flex-1">Confirm</Button>
-              <Button className="bg-red-500 flex-1">Cancel</Button>
-            </XStack>
-
-            <Dialog.Close />
-          </Dialog.Content>
-        </Dialog.Portal>
-      </Dialog> */}
     </Container>
   );
 }

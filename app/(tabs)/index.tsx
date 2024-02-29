@@ -5,7 +5,6 @@ import { UserPlus } from "@tamagui/lucide-icons";
 import { router } from "expo-router";
 import { TouchableOpacity } from "react-native";
 import { useSession } from "../../ctx/auth-context";
-
 import { getSessions } from "@/utils/session.utils";
 import { useState, useEffect } from "react";
 import { SessionType } from "@/types/session.type";
@@ -30,7 +29,6 @@ const HomeScreen = () => {
     <Container>
       <YStack className="min-w-full pb-8" space>
         <H3>Welcome back {user.name} </H3>
-
         <SizableText
           className={clsx(
             sessions.length > 0 ? "text-green-500" : "text-red-500"
@@ -40,32 +38,34 @@ const HomeScreen = () => {
             ? `We have found ${sessions.length} current sessions for you.`
             : "You don't have sessions for the moment. You can create one by selecting a client."}
         </SizableText>
-
         <XStack className="flex flex-col">
           {sessions.map((session) => {
             return (
-              <Card key={session.id} className="my-2" bordered>
-                <Card.Header className="flex flex-row justify-between">
-                  <SizableText>{session?.client.name}</SizableText>
-                  <SizableText className="text-gray-500">
-                    {session?.machinesSession.length} Machines
-                  </SizableText>
-                </Card.Header>
-                <Card.Header padded>
-                  <Button
-                    className="bg-blue-500 text-white"
-                    borderRadius="$8"
-                    onPress={() =>
-                      router.navigate(`sessions/sessionDetails/${session.id}`)
-                    }
-                  >
-                    <SizableText>See more</SizableText>
-                  </Button>
-                </Card.Header>
-              </Card>
+              <TouchableOpacity
+                key={session.id}
+                onPress={() =>
+                  router.push(`/sessions/session-details/${session.id}`)
+                }
+              >
+                <Card key={session.id} className="my-2" bordered>
+                  <Card.Header className="flex flex-row justify-between">
+                    <SizableText>{session?.client.name}</SizableText>
+                    <SizableText className="text-gray-500">
+                      {session?.machinesSession.length} Machines
+                    </SizableText>
+                  </Card.Header>
+                  <Card.Header padded>
+                    <Button
+                      className="bg-blue-500 text-white"
+                      borderRadius="$8"
+                    >
+                      <SizableText>See more</SizableText>
+                    </Button>
+                  </Card.Header>
+                </Card>
+              </TouchableOpacity>
             );
           })}
-
           <TouchableOpacity onPress={() => router.push("/clients/")}>
             <Card className="bg-white" elevate size="$4" bordered>
               <Card.Header className="flex flex-row">
